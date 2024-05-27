@@ -34,17 +34,39 @@ class CSVReader{
 
                 std::getline(ss,tick_info.date,',');
                 std::getline(ss,tick_info.time,',');
-                std::getline(ss,tick_info.open,',');
-                std::getline(ss,tick_info.high,',');
-                std::getline(ss,tick_info.low,',');
-                std::getline(ss,tick_info.close,',');
-                std::getline(ss,tick_info.volume,',');
-                std::getline(ss,tick_info.ticker,',');
+                
+                // getline will fail when used with other than string types
+                // std::getline(ss,tick_info.open,',');
+                // std::getline(ss,tick_info.high,',');
+                // std::getline(ss,tick_info.low,',');
+                // std::getline(ss,tick_info.close,',');
+                // std::getline(ss,tick_info.volume,',');
+                // std::getline(ss,tick_info.ticker,',');
+
+                std::string open_,close_,high_,low_,volume;
+
+                try {
+                    // load it into a str variable
+                    std::getline(ss,open_,',');
+                    std::getline(ss,high_,',');
+                    std::getline(ss,low_,',');
+                    std::getline(ss,close_,',');
+
+                    // use the stod method to convert the string to a double for the struct type
+                    tick_info.open = std::stod(open_);
+                    tick_info.high = std::stod(high_);
+                    tick_info.low = std::stod(low_);
+                    tick_info.close = std::stod(close_);
+                } catch (const std::invalid_argument& e) {
+                    std::cerr<<"Invalid argument: "<<e.what()<<std::endl;
+                } catch (const std::out_of_range& e) {
+                    std::cerr<<"Value out of range: "<<e.what()<<std::endl;
+                }
+
                 std::getline(ss,tick_info.datetime,',');
 
                 stock_data.push_back(tick_info);
             }
-
             file.close();
             return stock_data;
         }
